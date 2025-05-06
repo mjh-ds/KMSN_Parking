@@ -9,6 +9,7 @@ from datetime import datetime
 logging.getLogger("pdfminer").setLevel(logging.ERROR)
 ##  Functions to use later in the code ##
 ################################################
+
 # Function to count the number of files in a ZIP folder
 def count_files(tar_xz_file):
     """Count the number of files inside a .tar.xz archive."""
@@ -29,7 +30,7 @@ def extract_nth_file(tar_xz_file, output_dir, n):
                 out.write(extracted_file.read())
     return output_path
 
-# Function to extract the nth file from the ZIP folder
+# Function to extract the numeric information from the PDF file
 def crop_and_extract(document, region):
     # Open the PDF and extract text from the defined region
     with pdfplumber.open(document) as pdf:
@@ -42,7 +43,7 @@ def crop_and_extract(document, region):
     
     return text, dt
 
-# Function to extract the nth file from the ZIP folder
+# Function to convert the extracted numeric information from the PDF into a dataframe
 def extract_to_df(extract, c_date):
     numeric_lines = [line for line in cr.split("\n") if re.match(r'^\d+\s+\d+$', line)]  # Keep lines with numbers only
 
@@ -55,6 +56,7 @@ def extract_to_df(extract, c_date):
     df = df.select(["datetime"] + df.columns[:-1])
     return df
 
+# Function to clean out a directory
 def clean_dir(dir, suffix):
     for file_name in os.listdir(dir):
         file_path = os.path.join(dir, file_name)
